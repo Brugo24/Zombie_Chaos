@@ -1,111 +1,64 @@
-import java.awt.Insets;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.time.ZoneId;
+package joguin;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class Jogo extends JFrame implements Runnable{
+    JFrame janela;
+    Painel painel;
+    Thread gameThread;
+    LoadAssets assets;
+    int FPS = 60;
 
-    private GamePanel game_panel;
-    private Thread thread;
-    private Character character;
-    private Controller controller;
-    private Point point;
-    private LoadAssets loadAssets;
-    
-    
     Jogo(){
-    
-        loadAssets=new LoadAssets();
-        point=new Point();
-        point.setLocation(MouseInfo.getPointerInfo().getLocation().getX(), MouseInfo.getPointerInfo().getLocation().getY());
-        character = new Character();
-        //zombie=new Zombie(loadAssets,character);
-        controller=new Controller(this,point,character,loadAssets);
-         game_panel=new GamePanel(character,controller,this,point,loadAssets);
+        assets = new LoadAssets();
+        janela = new JFrame();
+        painel = new Painel(this,assets);
 
-        setTitle(Constants.TITLE);
-        setSize(Constants.WIDTH, Constants.HEIGHT );
-        setLocationRelativeTo(null);
-        setResizable(false);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        add(game_panel);
-        setVisible(true);
+        janela.setResizable(false);
+        janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        janela.setTitle("Joguin Teste");
+
         
-        start();
+        janela.add(painel);
+        
+        
+        janela.pack();
+        janela.setVisible(true);
+        startThread();
     }
+
     public static void main(String[] args) {
         new Jogo();
     }
 
-    public synchronized void  start(){
-
-        if(game_panel.getIsRunning() == true)return;
-
-        game_panel.setIsRunning(true);
-        thread=new Thread(this);
-        thread.start();
-        
+    public void startThread(){
+        gameThread = new Thread(this);
+        gameThread.start();
     }
 
-    public synchronized void stop(){
-        if(!game_panel.getIsRunning())return;
+    public void run(){
+        double interval = (double) 1000000000 /FPS;
+        double proxatt = System.nanoTime() + interval;
 
-        game_panel.setIsRunning(false);
-        try {
+        while(gameThread.isAlive()){
+            painel.update();
             
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+            painel.repaint();
 
-        System.exit(1);
+            try{
+                double temporestante = proxatt - System.nanoTime();
+                temporestante /= 1000000;
 
-    }
+                if(temporestante < 0){temporestante = 0;}
 
-    @Override
-    public void run() {
-        //GAME LOOP
+                Thread.sleep((long) temporestante);
 
-        long lastTime=System.nanoTime();
-        double ns=1000000000/Constants.AMOUNT_OF_TICKS;
-        double delta=0;
-        int updates=0;
-        int frames=0;
-       long timer=System.currentTimeMillis();
-
-        
-        while (game_panel.getIsRunning() == true) {
-            long now=System.nanoTime();
-            delta+=(now-lastTime)/ns;
-            lastTime=now;
-            if(delta>=1){
-                //tick()
-                delta--;
-                updates++;
-                character.updateLocation();
-                game_panel.repaint();
-                controller.tick();
-                //zombie.tick();
-            }
-            //render()
-            frames++;
-
-            if(System.currentTimeMillis()-timer>1000){
-                timer+=1000;
-                updates=0;
-                frames=0;
+                proxatt += interval;
+            }catch(InterruptedException e){
+                e.printStackTrace();
             }
 
-
-            
-            
-            
-
-            
-
         }
-        stop();
     }
+
 }

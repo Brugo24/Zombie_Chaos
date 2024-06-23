@@ -1,3 +1,5 @@
+package joguin;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -8,12 +10,12 @@ public class Zombie {
     private double zombieSpeed=2;
     private BufferedImage[][] zombieImages;
     private int indexImage;
-    private Character character;
-    Zombie(LoadAssets loadAssets,Character character,int x,int y){
-     this.character=character;
+    private Personagem personagem;
+    Zombie(BufferedImage[][] zombieImage,Personagem personagem,int x,int y){
+     this.personagem = personagem;
       //zombieSpeed=1;
       indexImage=0;
-      zombieImages=loadAssets.getZombieImages();
+      this.zombieImages=zombieImage;
       this.x=x;
       this.y=y;
     }
@@ -36,7 +38,7 @@ public class Zombie {
       int centerY=y+imageHeight/2;
       centerY=Constants.HEIGHT-28-centerY;
     
-      double angle=Math.atan2(character.getPosY()- (y+imageHeight/2), character.getPosX()-(x+imageWidth/2));
+      double angle=Math.atan2(personagem.getY() - (y+imageHeight/2), personagem.getX() - (x+imageWidth/2));
       
 
         Graphics2D g2=(Graphics2D)g;      
@@ -47,8 +49,8 @@ public class Zombie {
     }
 
     private void move(){
-        int diffX = character.getPosX() - x;
-        int diffY = character.getPosY() - y;
+        int diffX = personagem.getX() - x;
+        int diffY = personagem.getY() - y;
         double distance = Math.sqrt(diffX * diffX + diffY * diffY);
 
         if (distance != 0) {
