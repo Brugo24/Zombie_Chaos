@@ -20,12 +20,15 @@ public class MenuP extends JFrame implements MouseMotionListener{
     ImageIcon buttonPlayHover=new ImageIcon("./res/Menu/buttonPlayHover.png");
     ImageIcon buttonDevsHover=new ImageIcon("./res/Menu/buttonDevsHover.png");
     JPanel panel;
+    ImageIcon icon;
    
     MenuP(){
         setSize(800,600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
+        icon=new ImageIcon("./res/images/icon.jpeg");
+        this.setIconImage(icon.getImage());
         selImageDevs=buttonDevsNormal;
         selImagePlay=buttonPlayNormal;
         panel=new JPanel(){

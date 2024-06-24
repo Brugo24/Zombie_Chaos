@@ -21,18 +21,19 @@ public class KeyHandler implements KeyListener{
 
         //System.out.println("Pressionada");
         
-        if(key == KeyEvent.VK_W){
+        if(key == KeyEvent.VK_W || key==KeyEvent.VK_UP){
             upPressed = true;
         }
-        if(key == KeyEvent.VK_S){
+        if(key == KeyEvent.VK_S || key==KeyEvent.VK_DOWN ){
             downPressed = true;
         }
-        if(key == KeyEvent.VK_D){
+        if(key == KeyEvent.VK_D || key==KeyEvent.VK_RIGHT ){
             rightPressed = true;
         }
-        if(key == KeyEvent.VK_A){
+        if(key == KeyEvent.VK_A || key==KeyEvent.VK_LEFT ){
             leftPressed = true;
         }
+        anyKPressed=(upPressed||leftPressed||rightPressed||downPressed);
     }
 
     public void keyReleased(KeyEvent e) {
@@ -40,20 +41,20 @@ public class KeyHandler implements KeyListener{
 
         //System.out.println("Solta");
 
-        if(key == KeyEvent.VK_W){
+        if(key == KeyEvent.VK_W || key==KeyEvent.VK_UP){
             upPressed = false;
         }
-        if(key == KeyEvent.VK_S){
+        if(key == KeyEvent.VK_S || key==KeyEvent.VK_DOWN){
             downPressed = false;
         }
-        if(key == KeyEvent.VK_D){
+        if(key == KeyEvent.VK_D || key==KeyEvent.VK_RIGHT ){
             rightPressed = false;
         }
-        if(key == KeyEvent.VK_A){
+        if(key == KeyEvent.VK_A || key==KeyEvent.VK_LEFT ){
             leftPressed = false;
         }
 
-        if(!upPressed && !downPressed && !rightPressed && !leftPressed) anyKPressed = false;
+        anyKPressed=(upPressed || downPressed || rightPressed || leftPressed);
     }
     
 }

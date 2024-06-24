@@ -7,6 +7,7 @@ public class MouseHandler implements MouseListener{
     public int posX;
     public int posY;
 
+
     public void mouseClicked(MouseEvent e) {
         clicked = true;
         posX = e.getX() + 16;

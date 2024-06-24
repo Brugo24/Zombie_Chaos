@@ -1,6 +1,10 @@
 package joguin;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class Jogo extends JFrame implements Runnable{
     JFrame janela;
@@ -23,8 +27,20 @@ public class Jogo extends JFrame implements Runnable{
         
         
         janela.pack();
+        setCursorimg();
         janela.setVisible(true);
         startThread();
+    }
+
+    void setCursorimg(){
+        try {
+            BufferedImage cursorimg = ImageIO.read(getClass().getResourceAsStream("./res/sprites/cursor/mira.png"));
+            Cursor cursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorimg, new Point(0,0), "Sight");
+            setCursor(cursor);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static void main(String[] args) {
