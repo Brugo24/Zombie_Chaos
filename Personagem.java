@@ -18,6 +18,8 @@ public class Personagem {
     private int distanceX;
     private int distanceY;
     private int arma = 0;
+    private int colisionX;
+    private int colisionY;
 
     Painel gp;
     KeyHandler keyH;
@@ -36,8 +38,8 @@ public class Personagem {
     }
 
     void setDefaultValues(){
-        posX = 100;
-        posY = 200;
+        colisionX = posX = 600;
+        colisionY = posY = 300;
         velocidade = 5;
         spriteCounter = 0;
         angulo = 0;
@@ -64,6 +66,7 @@ public class Personagem {
     public void recebedano(int dano){this.vida -= dano;}
 
     void updateangulo(){
+        //angulo,posX+(int)(Constants.SHOOTER_WIDTH/2.5)/2,posY+(int)(Constants.SHOOTER_HEIGHT/2.5)/2
         distanceX = mouseMH.posX - 75 - posX;
         distanceY = mouseMH.posY - 47 - posY;
         angulo = Math.atan2(distanceY, distanceX);
@@ -97,13 +100,14 @@ public class Personagem {
 
     void drawlifebar(Graphics2D g){
         g.setColor(Color.green);
-        g.fillRect(120, 20, (int)(vida * 2.5), 25);
+        g.fillRect(120, 20, (int)(vida * 3), 25);
     }
 
     public void draw(Graphics2D g){
         g.setColor(Color.BLUE);
         //System.out.println("angulo:"+angulo+" angulorotação:"+angulorotacao);
         g.rotate(angulo,posX+75,posY+47);
+        //g.setColor(Color.blue);
         //g.drawRect(posX, posY, comprimento, largura);
         g.drawImage(sprites[arma][spriteCounter], posX, posY, comprimento, largura, null);
     }

@@ -40,10 +40,9 @@ public class Painel extends JPanel{
         playerIcon = assets.getPlayericon();
         personagem = new Personagem(this,keyH,mouseMH,mouseH,personagemImages);
         control = new Controle(personagem, assets);
-        pistola = new Pistola(mouseH,control);
+        pistola = new Pistola(assets.getBulletImage(),mouseH,control);
 
         ground = assets.getBackground();
-        control.addzombie();
 
         this.addKeyListener(keyH);
         this.addMouseMotionListener(mouseMH);
@@ -81,6 +80,8 @@ public class Painel extends JPanel{
         g2.setTransform(oldState);
         control.tick(g2,oldState);
 
+        g2.setColor(Color.gray);
+        g2.fillRect(0,0,1200,120);
         personagem.drawlifebar(g2);
         g2.drawImage(playerIcon,15,15,100,100,null);
 

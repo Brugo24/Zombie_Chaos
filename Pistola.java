@@ -3,17 +3,20 @@ package joguin;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import java.awt.image.BufferedImage;
 
 public class Pistola{
     public int dano;
     public int velocidade;
     public int cadencia;
+    BufferedImage bulletImage;
     Controle control;
     MouseHandler mouseH;
     
-    public Pistola(MouseHandler mouseH,Controle control){
+    public Pistola(BufferedImage bulletImage, MouseHandler mouseH, Controle control){
         this.mouseH = mouseH;
         this.control = control;
+        this.bulletImage = bulletImage;
 
         setDefaultValues();
     }
@@ -38,9 +41,9 @@ public class Pistola{
     }
 
     public void atira(int X, int Y){
-        atiraSound();
+        //atiraSound();
         System.out.println("mX: "+mouseH.posX+" mY: "+mouseH.posY);
-        control.addbala(new Bala(X, Y, mouseH.posX, mouseH.posY));
+        control.addbala(new Bala(bulletImage,X, Y, mouseH.posX, mouseH.posY));
     }
 
     public void update(int X, int Y){
