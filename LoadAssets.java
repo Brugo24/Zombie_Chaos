@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public class LoadAssets {
     private final BufferedImage[][] imagesCharacter=new BufferedImage[3][20];
@@ -57,7 +60,7 @@ public class LoadAssets {
     void loadAmmoImage(){
         InputStream is;
         try{
-            is = getClass().getResourceAsStream("./res/sprites/entity/Ammo.jpeg");
+            is = getClass().getResourceAsStream("./res/sprites/entity/ammo.png");
             ammoImage = ImageIO.read(is);
         }catch(IOException ex){
             ex.printStackTrace();

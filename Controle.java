@@ -45,7 +45,7 @@ public class Controle {
             if(zombie.distance <= 10 && !zombie.isattacking && dmgcooldown <=0){
                 zombie.attack();
             }
-            if((distance <= 0.001) && dmgcooldown <= 0){
+            if((distance <= 0.1) && dmgcooldown <= 0){
                 personagem.recebedano(5);
                 dmgcooldown = 100;
             }
@@ -60,8 +60,8 @@ public class Controle {
 
                 if(bala.getX()>= zombie.getX() && bala.getX()<=zombie.getX()+(int)(288/3) && bala.getY()>=zombie.getY() && bala.getY()<=zombie.getY()+(int)(311/3)){
                     Random random = new Random();
-                    int drop = random.nextInt(3);
-                    if(drop == 1){
+                    int drop = random.nextInt(1);
+                    if(drop == 0){
                         al.add(new Ammo(assets.getAmmoImages(),zombie.getX(),zombie.getY()));
                     }
 

@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 public class Entity {
     int x;
     int y;
-    int width = 60;
-    int height = 60;
+    int width = 50;
+    int height = 50;
     BufferedImage icon;
 }

@@ -21,6 +21,7 @@ public class Personagem {
     private int arma = 0;
     private int colisionX;
     private int colisionY;
+    private int ammo;
 
     Painel gp;
     KeyHandler keyH;
@@ -45,6 +46,7 @@ public class Personagem {
         spriteCounter = 0;
         angulo = 0;
 
+        ammo = 10;
         vida = 100;
     }
 
@@ -121,7 +123,7 @@ public class Personagem {
         //g.drawRect(posX, posY, comprimento, largura);
         g.drawImage(sprites[arma][spriteCounter], posX, posY, comprimento, largura, null);
         g.setTransform(at);
-        //g.setColor(Color.red);
-        //g.fillOval(colisionX, colisionY, 5, 5);
+        g.setColor(Color.red);
+        g.fillOval(colisionX, colisionY, 5, 5);
     }
 }
