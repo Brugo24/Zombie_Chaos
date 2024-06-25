@@ -14,9 +14,11 @@ public class LoadAssets {
     private final BufferedImage[][] imagesZombie=new BufferedImage[2][17];
     private BufferedImage bulletImage;
     private final int[] qteSpriteZombie = {17, 9};
+    //private final int[]
     private BufferedImage ground;
     private BufferedImage playericon;
     private BufferedImage ammoImage;
+    private BufferedImage ammoCountIcon;
 
     LoadAssets(){
       loadCharacterImages();
@@ -24,6 +26,7 @@ public class LoadAssets {
       loadBackgroundImages();
       loadBulletImages();
       loadAmmoImage();
+      loadAmmoCountIcon();
     }
 
     void loadCharacterImages(){
@@ -47,6 +50,16 @@ public class LoadAssets {
         }
     }
 
+    void loadAmmoCountIcon(){
+        InputStream is;
+        try{
+            is = getClass().getResourceAsStream("./res/sprites/personagemicon/ammocounticon.png");
+            ammoCountIcon = ImageIO.read(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     void loadBulletImages(){
         InputStream is;
         try{
@@ -65,6 +78,10 @@ public class LoadAssets {
         }catch(IOException ex){
             ex.printStackTrace();
         }
+    }
+
+    BufferedImage getAmmoCountIcon(){
+        return ammoCountIcon;
     }
 
     BufferedImage getBulletImage(){

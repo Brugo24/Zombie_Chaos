@@ -14,7 +14,7 @@ public class Controle {
     LoadAssets assets;
     Zombie zombie;
     Bala bala;
-    private int zombiemaxnumber = 1;
+    private int zombiemaxnumber = 20;
     private int zombienumber = 0;
     private int timer = 0;
     private int dmgcooldown = 100;
@@ -32,6 +32,7 @@ public class Controle {
             double dist = Math.sqrt(difX * difX + difY * difY);
             if(dist <= 40){
                 al.remove(ammo);
+                personagem.gainammo();
             }
         }
     }
@@ -111,6 +112,7 @@ public class Controle {
 
     public void addbala(Bala bala){
         bl.add(bala);
+        personagem.shot();
     }
 
     public void addzombie(int x, int y){

@@ -11,11 +11,13 @@ public class Pistola{
     BufferedImage bulletImage;
     Controle control;
     MouseHandler mouseH;
+    Personagem personagem;
     
-    public Pistola(BufferedImage bulletImage, MouseHandler mouseH, Controle control){
+    public Pistola(BufferedImage bulletImage, MouseHandler mouseH, Controle control,Personagem personagem){
         this.mouseH = mouseH;
         this.control = control;
         this.bulletImage = bulletImage;
+        this.personagem = personagem;
         setDefaultValues();
     }
 
@@ -46,9 +48,9 @@ public class Pistola{
     }
 
     public void update(int X, int Y){
-        if(mouseH.clicked){
+        if(mouseH.leftclicked && personagem.getAmmo() > 0){
             atira(X, Y);
-            mouseH.clicked = false;
+            mouseH.leftclicked = false;
         }
     }
 

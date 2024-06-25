@@ -72,6 +72,8 @@ public class Personagem {
 
     public void recebedano(int dano){this.vida -= dano;}
 
+    public int getAmmo(){return ammo;}
+
     void updateangulo(){
         //angulo,posX+(int)(Constants.SHOOTER_WIDTH/2.5)/2,posY+(int)(Constants.SHOOTER_HEIGHT/2.5)/2
         distanceX = mouseMH.posX - 75 - posX;
@@ -81,9 +83,17 @@ public class Personagem {
         colisionY = (-(int)(30 * Math.sin(angulo) + 12 * Math.cos(angulo)) + posY + 47);
     }
 
+    public void shot(){ammo--;}
+
+    public void gainammo(){ammo += 3;}
+
     public void update(){
         if(keyH.anyKPressed){
             spriteCounter++;
+        }
+
+        if(ammo == 0){
+            mouseH.leftclicked = false;
         }
 
         updateangulo();

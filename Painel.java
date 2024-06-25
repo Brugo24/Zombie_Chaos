@@ -40,7 +40,7 @@ public class Painel extends JPanel{
         playerIcon = assets.getPlayericon();
         personagem = new Personagem(this,keyH,mouseMH,mouseH,personagemImages);
         control = new Controle(personagem, assets);
-        pistola = new Pistola(assets.getBulletImage(),mouseH,control);
+        pistola = new Pistola(assets.getBulletImage(),mouseH,control,personagem);
         pistola.atiraSound(0f);
 
         ground = assets.getBackground();
@@ -72,7 +72,7 @@ public class Painel extends JPanel{
         //System.out.println("Running");
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
-        Font font = new Font("Comic Sans MS",Font.PLAIN,20);
+        Font font = new Font("Comic Sans MS",Font.PLAIN,30);
         g2.drawImage(ground,0,119,null);
         g2.drawImage(ground,611,119,null);
         oldState = g2.getTransform();
@@ -86,8 +86,12 @@ public class Painel extends JPanel{
         g2.fillRect(0,0,1200,120);
         personagem.drawlifebar(g2);
         g2.drawImage(playerIcon,15,15,100,100,null);
+        g2.drawImage(assets.getAmmoCountIcon(),125,50,20,50,null);
+        g2.setTransform(oldState);
         g2.setFont(font);
-        //g2.drawString();
+        g2.setColor(Color.black);
+        g2.drawString("X"+Integer.toString(personagem.getAmmo()),160,80);
+        g2.setTransform(oldState);
         g2.dispose();
     }
 

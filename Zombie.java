@@ -87,7 +87,7 @@ public class Zombie {
         diffY = personagem.getcolisionY() - y;
         distance = (double)(Math.sqrt(diffX * diffX + diffY * diffY));
 
-        if (distance >= 0.1) {
+        if ((distance >= 0.1 && !isattacking)) {
             x += (int) (zombieSpeed * (diffX / distance));
             y += (int) (zombieSpeed * (diffY / distance));
         }
