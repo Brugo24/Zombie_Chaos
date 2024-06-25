@@ -22,6 +22,12 @@ public class Personagem {
     private int colisionX;
     private int colisionY;
     private int ammo;
+    private int personagemState;
+    public boolean ismelee;
+    private int tickinterval = 2;
+    private int meleeRangeX;
+    private int meleeRangeY;
+    private int dinheiros;
 
     Painel gp;
     KeyHandler keyH;
@@ -46,8 +52,12 @@ public class Personagem {
         spriteCounter = 0;
         angulo = 0;
 
-        ammo = 10;
+        ismelee = false;
+        personagemState = 0;
+
+        ammo = 1000;
         vida = 100;
+        dinheiros = 100;
     }
 
     public int getX(){return posX;}
@@ -74,6 +84,10 @@ public class Personagem {
 
     public int getAmmo(){return ammo;}
 
+    public int getdinheiros(){return dinheiros;}
+
+    public void ganhadinheiros(int ganhas){dinheiros+=ganhas;}
+
     void updateangulo(){
         //angulo,posX+(int)(Constants.SHOOTER_WIDTH/2.5)/2,posY+(int)(Constants.SHOOTER_HEIGHT/2.5)/2
         distanceX = mouseMH.posX - 75 - posX;
@@ -81,15 +95,35 @@ public class Personagem {
         angulo = Math.atan2(distanceY, distanceX);
         colisionX = (-(int)(30 * Math.cos(angulo) - 12 * Math.sin(angulo)) + posX + 75);
         colisionY = (-(int)(30 * Math.sin(angulo) + 12 * Math.cos(angulo)) + posY + 47);
+        meleeRangeX = ((int)(15 * Math.cos(angulo) - 5 * Math.sin(angulo)) + posX + 75);
+        meleeRangeY = ((int)(15 * Math.sin(angulo) + 5 * Math.cos(angulo)) + posY + 47);
     }
 
     public void shot(){ammo--;}
 
     public void gainammo(){ammo += 3;}
 
+    void melee(){
+        ismelee = true;
+        personagemState = 1;
+        spriteCounter = 0;
+    }
+
+    public int getMeleeRangeX(){return meleeRangeX;}
+
+    public int getMeleeRangeY(){return meleeRangeY;}
+
     public void update(){
-        if(keyH.anyKPressed){
-            spriteCounter++;
+        if(mouseH.rightclicked && !ismelee){
+            melee();
+        }
+        if(tickinterval == 0) {
+            if (keyH.anyKPressed || ismelee) {
+                spriteCounter++;
+            }
+            tickinterval = 2;
+        }else{
+            tickinterval--;
         }
 
         if(ammo == 0){
@@ -114,7 +148,13 @@ public class Personagem {
             //System.out.println("esquerda");
             posX -= velocidade;
         }
-        if(spriteCounter == 20) spriteCounter = 0;
+        if(spriteCounter == 20 && personagemState == 0) spriteCounter = 0;
+        else if(spriteCounter == 14 && personagemState == 1) {
+            spriteCounter = 0;
+            personagemState = 0;
+            ismelee = false;
+            mouseH.rightclicked = false;
+        }
     }
 
     void drawlifebar(Graphics2D g){
@@ -131,9 +171,14 @@ public class Personagem {
         g.rotate(angulo,posX+75,posY+47);
         //g.setColor(Color.blue);
         //g.drawRect(posX, posY, comprimento, largura);
-        g.drawImage(sprites[arma][spriteCounter], posX, posY, comprimento, largura, null);
+        if(personagemState == 0) {
+            g.drawImage(sprites[personagemState][spriteCounter], posX, posY, comprimento, largura, null);
+        }
+        else{
+            g.drawImage(sprites[personagemState][spriteCounter], posX, posY, 110, 89, null);
+        }
         g.setTransform(at);
         g.setColor(Color.red);
-        g.fillOval(colisionX, colisionY, 5, 5);
+        g.fillOval(meleeRangeX, meleeRangeY, 5, 5);
     }
 }

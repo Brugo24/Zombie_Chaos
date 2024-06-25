@@ -17,8 +17,9 @@ public class Zombie {
     public int diffX;
     public int diffY;
     private int tickinterval = 2;
+    private int vida;
 
-    Zombie(BufferedImage[][] zombieImage,Personagem personagem,int x,int y){
+    Zombie(BufferedImage[][] zombieImage,Personagem personagem,int x,int y,int vida){
         this.personagem = personagem;
         //zombieSpeed=1;
         indexImage=0;
@@ -27,6 +28,7 @@ public class Zombie {
         this.zombieImages=zombieImage;
         this.x=x;
         this.y=y;
+        this.vida=vida;
     }
 
     public void tick(){
@@ -39,6 +41,10 @@ public class Zombie {
             tickinterval--;
         }
     }
+
+    public int getVida(){return vida;}
+
+    public void dano(int dano){vida-=dano;}
 
     private void setIndexImage(){
         indexImage++;
@@ -87,9 +93,12 @@ public class Zombie {
         diffY = personagem.getcolisionY() - y;
         distance = (double)(Math.sqrt(diffX * diffX + diffY * diffY));
 
-        if ((distance >= 0.1 && !isattacking)) {
+        if (distance >= 0.1 && !isattacking) {
             x += (int) (zombieSpeed * (diffX / distance));
             y += (int) (zombieSpeed * (diffY / distance));
+        } else{
+            x += (int) ((zombieSpeed - 2) * (diffX / distance));
+            y += (int) ((zombieSpeed - 2) * (diffY / distance));
         }
     }
 

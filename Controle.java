@@ -14,14 +14,42 @@ public class Controle {
     LoadAssets assets;
     Zombie zombie;
     Bala bala;
-    private int zombiemaxnumber = 20;
+    private int zombiemaxnumber = 1;
     private int zombienumber = 0;
     private int timer = 0;
     private int dmgcooldown = 100;
+    private boolean canmeleedmg = true;
 
     Controle(Personagem personagem,LoadAssets assets){
         this.personagem = personagem;
         this.assets = assets;
+    }
+
+    private void killZombie(Zombie zombie){
+        Random random = new Random();
+        int drop = random.nextInt(1);
+        zl.remove(zombie);
+        zombienumber--;
+        if(drop == 0){
+            al.add(new Ammo(assets.getAmmoImages(),zombie.getX(),zombie.getY()));
+        }
+        personagem.ganhadinheiros(10);
+    }
+
+    private void meleeColision(){
+        for(int i=0; i< zl.size(); i++){
+            Zombie zombie = zl.get(i);
+            int distX = personagem.getMeleeRangeX() - (zombie.getX()+(288/3)/2);
+            int distY = personagem.getMeleeRangeY() - (zombie.getY()+(int)(311/3)/2);
+            double dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
+            if(dist <= 50){
+                zombie.dano(1);
+                if(zombie.getVida() == 0) {
+                    killZombie(zombie);
+                }
+                canmeleedmg = false;
+            }
+        }
     }
 
     private void entityColision(){
@@ -43,10 +71,10 @@ public class Controle {
             int difX = zombie.getX() - personagem.getcolisionX();
             int difY = zombie.getY() - personagem.getcolisionY();
             double distance = Math.sqrt(difX*difX+difY*difY);
-            if(zombie.distance <= 10 && !zombie.isattacking && dmgcooldown <=0){
+            if(zombie.distance <= 2 && !zombie.isattacking && dmgcooldown <=0){
                 zombie.attack();
             }
-            if((distance <= 0.1) && dmgcooldown <= 0){
+            if((distance <= 2) && zombie.isattacking && dmgcooldown <= 0){
                 personagem.recebedano(5);
                 dmgcooldown = 100;
             }
@@ -60,14 +88,10 @@ public class Controle {
                 bala=bl.get(j);
 
                 if(bala.getX()>= zombie.getX() && bala.getX()<=zombie.getX()+(int)(288/3) && bala.getY()>=zombie.getY() && bala.getY()<=zombie.getY()+(int)(311/3)){
-                    Random random = new Random();
-                    int drop = random.nextInt(1);
-                    if(drop == 0){
-                        al.add(new Ammo(assets.getAmmoImages(),zombie.getX(),zombie.getY()));
+                    zombie.dano(1);
+                    if(zombie.getVida() == 0){
+                        killZombie(zombie);
                     }
-
-                    zl.remove(zombie);
-                    zombienumber--;
                     bl.remove(bala);
                 }
               }
@@ -84,6 +108,11 @@ public class Controle {
         }
         else{
             if(timer != 0) timer--;
+        }
+        if(personagem.ismelee && canmeleedmg){
+            meleeColision();
+        }else if(!personagem.ismelee) {
+            canmeleedmg = true;
         }
         bulletColision();
         zombieColision();
@@ -116,7 +145,7 @@ public class Controle {
     }
 
     public void addzombie(int x, int y){
-        zl.add(new Zombie(assets.getZombieImages(), personagem, x, y));
+        zl.add(new Zombie(assets.getZombieImages(), personagem, x, y,2));
     }
 
     void spawnzombie(){

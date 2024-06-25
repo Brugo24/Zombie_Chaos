@@ -86,11 +86,15 @@ public class Painel extends JPanel{
         g2.fillRect(0,0,1200,120);
         personagem.drawlifebar(g2);
         g2.drawImage(playerIcon,15,15,100,100,null);
-        g2.drawImage(assets.getAmmoCountIcon(),125,50,20,50,null);
+        g2.drawImage(assets.getAmmoCountIcon(),125,60,20,50,null);
         g2.setTransform(oldState);
         g2.setFont(font);
         g2.setColor(Color.black);
-        g2.drawString("X"+Integer.toString(personagem.getAmmo()),160,80);
+        g2.drawString("X"+Integer.toString(personagem.getAmmo()),155,100);
+        g2.drawImage(assets.getMoneyIcon(),165 + Integer.toString(personagem.getAmmo()).length()*20,55,60,60,null);
+        g2.setColor(Color.green);
+        g2.drawString(Integer.toString(personagem.getdinheiros()),215 + Integer.toString(personagem.getAmmo()).length()*20,100);
+        //g2.setColor();
         g2.setTransform(oldState);
         g2.dispose();
     }

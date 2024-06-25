@@ -14,11 +14,12 @@ public class LoadAssets {
     private final BufferedImage[][] imagesZombie=new BufferedImage[2][17];
     private BufferedImage bulletImage;
     private final int[] qteSpriteZombie = {17, 9};
-    //private final int[]
+    private final int[] qteSpritePersonagem = {20,14};
     private BufferedImage ground;
     private BufferedImage playericon;
     private BufferedImage ammoImage;
     private BufferedImage ammoCountIcon;
+    private BufferedImage moneyIcon;
 
     LoadAssets(){
       loadCharacterImages();
@@ -26,17 +27,40 @@ public class LoadAssets {
       loadBackgroundImages();
       loadBulletImages();
       loadAmmoImage();
-      loadAmmoCountIcon();
+      loadIcons();
+    }
+
+    void loadIcons() {
+        loadAmmoCountIcon();
+        loadMoneyIcon();
+    }
+
+    void loadMoneyIcon(){
+        InputStream is;
+        try{
+            is = getClass().getResourceAsStream("./res/sprites/personagemicon/moneyicon.png");
+            moneyIcon = ImageIO.read(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     void loadCharacterImages(){
          InputStream is;
         try{
 
-            for(int i=0;i<1;i++){
-              for(int j=0;j<20;j++){
-                is=getClass().getResourceAsStream("./res/sprites/personagem/"+j+".png");
-                imagesCharacter[i][j]=ImageIO.read(is);
+            for(int i=0;i<qteSpritePersonagem.length;i++){
+              for(int j=0;j<qteSpritePersonagem[i];j++){
+                switch (i){
+                    case 0:
+                        is=getClass().getResourceAsStream("./res/sprites/personagem/"+j+".png");
+                        imagesCharacter[i][j]=ImageIO.read(is);
+                        break;
+                    case 1:
+                        is=getClass().getResourceAsStream("./res/sprites/personagemmelee/"+j+".png");
+                        imagesCharacter[i][j]=ImageIO.read(is);
+                        break;
+                }
               }
             }
         }catch(IOException ex){
@@ -78,6 +102,10 @@ public class LoadAssets {
         }catch(IOException ex){
             ex.printStackTrace();
         }
+    }
+
+    BufferedImage getMoneyIcon(){
+        return moneyIcon;
     }
 
     BufferedImage getAmmoCountIcon(){

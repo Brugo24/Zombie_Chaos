@@ -12,7 +12,7 @@ public class MouseHandler implements MouseListener{
         if(e.getButton() == MouseEvent.BUTTON1) {
             leftclicked = true;
         }
-        if(e.getButton() == MouseEvent.BUTTON2) {
+        if(e.getButton() == MouseEvent.BUTTON3) {
             rightclicked = true;
         }
         posX = e.getX() + 16;
@@ -26,6 +26,9 @@ public class MouseHandler implements MouseListener{
     public void mouseReleased(MouseEvent e) {
         if(e.getButton() == MouseEvent.BUTTON1) {
             leftclicked = true;
+        }
+        if(e.getButton() == MouseEvent.BUTTON3) {
+            rightclicked = true;
         }
         posX = e.getX() + 16;
         posY = e.getY() + 16;
