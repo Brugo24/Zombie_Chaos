@@ -1,6 +1,6 @@
 package joguin;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.LinkedList;
 import java.util.Random;
@@ -18,10 +18,15 @@ public class Controle {
     private int zombienumber = 0;
     private int timer = 0;
     private int dmgcooldown = 100;
-
-    Controle(Personagem personagem,LoadAssets assets){
+    private int horda=0;
+    private int hordaMaxNumber=5;
+    int matar=0;
+    int cont=0;
+    private Painel painel;
+    Controle(Personagem personagem,LoadAssets assets,Painel painel){
         this.personagem = personagem;
         this.assets = assets;
+        this.painel=painel;
     }
 
     private void entityColision(){
@@ -69,12 +74,16 @@ public class Controle {
                     zl.remove(zombie);
                     zombienumber--;
                     bl.remove(bala);
+                    cont++;
                 }
               }
         }
     }
 
+ public int getHorda(){return horda;}
+
     public void tick(Graphics2D g, AffineTransform oldState){
+
         Random random = new Random();
         dmgcooldown--;
         if(timer == 0 && zombienumber < zombiemaxnumber){
@@ -138,4 +147,25 @@ public class Controle {
         }
         addzombie(x,y);
     }
+
+    public void rodada() {
+        matar = horda * hordaMaxNumber;
+        if ((matar - cont) <= 0) {
+           System.out.println("horda " + horda + " concluida");
+
+            horda++;
+            cont = 0;
+            System.out.println("Iniciando horda " + horda);
+            //\iniciar transicao
+
+         painel.setTickIntro();
+        }
+    }
+
+
+
+
+
+
+
 }

@@ -32,6 +32,7 @@ public class Jogo extends JFrame implements Runnable{
     }
 
     public void startThread(){
+
         gameThread = new Thread(this);
         gameThread.start();
     }
