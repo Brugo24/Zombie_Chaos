@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 
 public class Bala extends Projetil {
     private final double direction;
+    private int dmg;
     BufferedImage bulletImage;
     
     public Bala(BufferedImage bulletImage, int startX, int startY, int endX, int endY){
@@ -18,6 +19,7 @@ public class Bala extends Projetil {
         this.bulletImage = bulletImage;
         //System.out.println("mX: "+xf+" mY: "+yf);
         velocidade = 20;
+        dmg = 1;
         direction=Math.atan2(yf-y-2, xf-x-2);
     }
 
@@ -29,6 +31,8 @@ public class Bala extends Projetil {
     public int getX(){return x;}
     
     public int getY(){return y;}
+
+    public int getDmg(){return dmg;}
 
     void draw(Graphics2D g){
         AffineTransform oldState;

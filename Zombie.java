@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 
 public class Zombie {
     private int x,y;
-    private double zombieSpeed=4;
+    private double zombieSpeed;
     private BufferedImage[][] zombieImages;
     private int indexImage;
     private Personagem personagem;
@@ -18,8 +18,9 @@ public class Zombie {
     public int diffY;
     private int tickinterval = 2;
     private int vida;
+    private int zombieDMG;
 
-    Zombie(BufferedImage[][] zombieImage,Personagem personagem,int x,int y,int vida){
+    Zombie(BufferedImage[][] zombieImage,Personagem personagem,int x,int y,int vida,int zombieSpeed,int zombieDMG){
         this.personagem = personagem;
         //zombieSpeed=1;
         indexImage=0;
@@ -29,6 +30,8 @@ public class Zombie {
         this.x=x;
         this.y=y;
         this.vida=vida;
+        this.zombieSpeed=zombieSpeed;
+        this.zombieDMG=zombieDMG;
     }
 
     public void tick(){
@@ -43,6 +46,8 @@ public class Zombie {
     }
 
     public int getVida(){return vida;}
+
+    public int getZombieDMG(){return zombieDMG;}
 
     public void dano(int dano){vida-=dano;}
 

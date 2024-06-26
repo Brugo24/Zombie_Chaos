@@ -40,7 +40,7 @@ public class LoadAssets {
     void loadMedKitImage(){
         InputStream is;
         try{
-            is = getClass().getResourceAsStream("./res/sprites/entity/medkit.png");
+            is = getClass().getResourceAsStream("res/sprites/entity/medkit.png");
             medKitImage = ImageIO.read(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -50,7 +50,7 @@ public class LoadAssets {
     void loadMoneyIcon(){
         InputStream is;
         try{
-            is = getClass().getResourceAsStream("./res/sprites/personagemicon/moneyicon.png");
+            is = getClass().getResourceAsStream("res/sprites/personagemicon/moneyicon.png");
             moneyIcon = ImageIO.read(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -65,11 +65,11 @@ public class LoadAssets {
               for(int j=0;j<qteSpritePersonagem[i];j++){
                 switch (i){
                     case 0:
-                        is=getClass().getResourceAsStream("./res/sprites/personagem/"+j+".png");
+                        is=getClass().getResourceAsStream("res/sprites/personagem/"+j+".png");
                         imagesCharacter[i][j]=ImageIO.read(is);
                         break;
                     case 1:
-                        is=getClass().getResourceAsStream("./res/sprites/personagemmelee/"+j+".png");
+                        is=getClass().getResourceAsStream("res/sprites/personagemmelee/"+j+".png");
                         imagesCharacter[i][j]=ImageIO.read(is);
                         break;
                 }
@@ -78,7 +78,7 @@ public class LoadAssets {
         }catch(IOException ex){
             ex.printStackTrace();
         }
-        is=getClass().getResourceAsStream("./res/sprites/personagemicon/icon.png");
+        is=getClass().getResourceAsStream("res/sprites/personagemicon/icon.png");
         try {
             playericon = ImageIO.read(is);
         }catch(IOException ex){
@@ -89,7 +89,7 @@ public class LoadAssets {
     void loadAmmoCountIcon(){
         InputStream is;
         try{
-            is = getClass().getResourceAsStream("./res/sprites/personagemicon/ammocounticon.png");
+            is = getClass().getResourceAsStream("res/sprites/personagemicon/ammocounticon.png");
             ammoCountIcon = ImageIO.read(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -99,7 +99,7 @@ public class LoadAssets {
     void loadBulletImages(){
         InputStream is;
         try{
-            is = getClass().getResourceAsStream("./res/sprites/bullet/bullet.png");
+            is = getClass().getResourceAsStream("res/sprites/bullet/bullet.png");
             bulletImage = ImageIO.read(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -109,7 +109,7 @@ public class LoadAssets {
     void loadAmmoImage(){
         InputStream is;
         try{
-            is = getClass().getResourceAsStream("./res/sprites/entity/ammo.png");
+            is = getClass().getResourceAsStream("res/sprites/entity/ammo.png");
             ammoImage = ImageIO.read(is);
         }catch(IOException ex){
             ex.printStackTrace();
@@ -150,11 +150,11 @@ public class LoadAssets {
               for(int j=0;j<qteSpriteZombie[i];j++){
                 switch (i){
                     case 0:
-                        is=getClass().getResourceAsStream("./res/sprites/zombie/zombie_move/"+j+".png");
+                        is=getClass().getResourceAsStream("res/sprites/zombie/zombie_move/"+j+".png");
                         imagesZombie[i][j]=ImageIO.read(is);
                         break;
                     case 1:
-                        is=getClass().getResourceAsStream("./res/sprites/zombie/zombie_attack/"+j+".png");
+                        is=getClass().getResourceAsStream("res/sprites/zombie/zombie_attack/"+j+".png");
                         imagesZombie[i][j]=ImageIO.read(is);
                         break;
                 }
@@ -167,7 +167,7 @@ public class LoadAssets {
 
     void loadBackgroundImages(){
         InputStream is;
-        is=getClass().getResourceAsStream("./res/sprites/ground/ground.jpg");
+        is=getClass().getResourceAsStream("res/sprites/ground/ground.jpg");
         try {
             ground = ImageIO.read(is);
         }catch (IOException e){

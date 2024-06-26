@@ -18,13 +18,21 @@ public class Controle {
     private int zombiemaxnumber = 10;
     private int zombienumber = 0;
     private int timer = 0;
-    private int dmgcooldown = 100;
+    private int dmgcooldown = 50;
     private boolean canmeleedmg = true;
     private int horda=0;
-    private int hordaMaxNumber=5;
+    private int hordaMaxNumber=40;
     int matar=0;
     int cont=0;
     private Painel painel;
+    private int zombieSpeed = 4;
+    private int zombieHP = 1;
+    private int zombieDMG = 1;
+    private int tickDiv = 1;
+    private int ammoDropValue = 5;
+    private int medKitDropValue = 5;
+    private int ammoValue = 3;
+    private int medKitValue = 10;
 
     Controle(Personagem personagem,LoadAssets assets,Painel painel){
         this.personagem = personagem;
@@ -32,21 +40,33 @@ public class Controle {
         this.painel = painel;
     }
 
+    void buffAmmoDropRate(){
+        ammoDropValue --;
+    }
+
+    void buffMedKitDropRate(){
+        medKitDropValue --;
+    }
+
+    void buffAmmoReceive(){
+        ammoValue *= 2;
+    }
+
+    void buffMedkitReceive(){
+        medKitValue += 5;
+    }
+
     private void killZombie(Zombie zombie){
         Random random = new Random();
-        int drop = random.nextInt(1);
+        int ammodrop = random.nextInt(ammoDropValue);
+        int medkitdrop = random.nextInt(medKitDropValue);
+        if(ammodrop == 0){
+            al.add(new Ammo(assets.getAmmoImages(),zombie.getX(),zombie.getY()));
+        }else if(medkitdrop == 0 && personagem.getvida() < 100){
+            ml.add(new Medkit(assets.getMedKitImage(),zombie.getX(),zombie.getY()));
+        }
         zl.remove(zombie);
         zombienumber--;
-        if(drop == 0){
-            if(personagem.getvida() < 100){
-                drop = random.nextInt(5);
-            }
-            if(drop <= 3) {
-                al.add(new Ammo(assets.getAmmoImages(), zombie.getX(), zombie.getY()));
-            }else{
-                ml.add(new Medkit(assets.getMedKitImage(), zombie.getX(), zombie.getY()));
-            }
-        }
         personagem.ganhadinheiros(10);
         cont++;
     }
@@ -58,7 +78,7 @@ public class Controle {
             int distY = personagem.getMeleeRangeY() - (zombie.getY()+(int)(311/3)/2);
             double dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
             if(dist <= 50){
-                zombie.dano(1);
+                zombie.dano(personagem.getMeleeDMG());
                 if(zombie.getVida() == 0) {
                     killZombie(zombie);
                 }
@@ -75,7 +95,7 @@ public class Controle {
             double dist = Math.sqrt(difX * difX + difY * difY);
             if(dist <= 40){
                 al.remove(ammo);
-                personagem.gainammo(3);
+                personagem.gainammo(ammoValue);
             }
         }
         for (int i = 0; i < ml.size(); i++){
@@ -85,7 +105,7 @@ public class Controle {
             double dist = Math.sqrt(difX * difX + difY * difY);
             if(dist <= 40){
                 ml.remove(medkit);
-                personagem.heal(10);
+                personagem.heal(medKitValue);
             }
         }
     }
@@ -111,49 +131,55 @@ public class Controle {
     private void bulletColision(){
         for(int i=0;i<zl.size();i++){
             zombie=zl.get(i);
-              for(int j=0;j<bl.size();j++){
+            for(int j=0;j<bl.size();j++){
                 bala=bl.get(j);
-
                 if(bala.getX()>= zombie.getX() && bala.getX()<=zombie.getX()+(int)(288/3) && bala.getY()>=zombie.getY() && bala.getY()<=zombie.getY()+(int)(311/3)){
-                    zombie.dano(1);
+                    zombie.dano(bala.getDmg());
                     if(zombie.getVida() == 0){
                         killZombie(zombie);
                     }
                     bl.remove(bala);
                 }
-              }
+            }
         }
+    }
+
+    void zombieBuff(){
+        zombieSpeed++;
+        zombieHP++;
+        zombieDMG++;
     }
 
     public int getHorda(){return horda;}
 
     public void rodada() {
-        matar = horda * hordaMaxNumber;
+        matar = hordaMaxNumber;
         if ((matar - cont) <= 0) {
             System.out.println("horda " + horda + " concluida");
+            tickDiv++;
             zl.clear();
             zombienumber = 0;
             personagem.gainammo(3 * al.size());
             al.clear();
             horda++;
+            if((horda+1)%3 == 0){
+                hordaMaxNumber = 40;
+                zombieBuff();
+                tickDiv=1;
+            }
             cont = 0;
             System.out.println("Iniciando horda " + horda);
-            setMaxNumber();
-            //\iniciar transicao
+            //iniciar transicao
 
             painel.setTickIntro();
         }
-    }
-
-    void setMaxNumber(){
-        zombiemaxnumber = matar + 5;
     }
 
     public void tick(Graphics2D g, AffineTransform oldState){
         Random random = new Random();
         dmgcooldown--;
         if(timer == 0 && zombienumber < zombiemaxnumber){
-            timer = random.nextInt(100/horda)+100/horda;
+            timer = random.nextInt(50/tickDiv)+50/tickDiv;
             spawnzombie();
             zombienumber++;
         }
@@ -201,7 +227,7 @@ public class Controle {
     }
 
     public void addzombie(int x, int y){
-        zl.add(new Zombie(assets.getZombieImages(), personagem, x, y,1));
+        zl.add(new Zombie(assets.getZombieImages(), personagem, x, y,zombieHP,zombieSpeed,zombieDMG));
     }
 
     void spawnzombie(){

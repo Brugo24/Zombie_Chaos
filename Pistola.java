@@ -2,35 +2,36 @@ package joguin;
 
 import javax.sound.sampled.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 
 public class Pistola{
-    public int dano;
-    public int velocidade;
-    public int cadencia;
+    private int dmg;
     BufferedImage bulletImage;
     Controle control;
     MouseHandler mouseH;
+    MouseMotionHandler mouseMH;
     Personagem personagem;
+    private int tick = 20;
     
-    public Pistola(BufferedImage bulletImage, MouseHandler mouseH, Controle control,Personagem personagem){
+    public Pistola(BufferedImage bulletImage, MouseHandler mouseH,MouseMotionHandler mouseMH, Controle control,Personagem personagem){
         this.mouseH = mouseH;
         this.control = control;
         this.bulletImage = bulletImage;
         this.personagem = personagem;
+        this.mouseMH = mouseMH;
         setDefaultValues();
     }
 
     void setDefaultValues(){
-        dano = 5;
-        velocidade = 10;
-        cadencia = 0;
+        dmg = 1;
     }
 
     public void atiraSound(float volume){
         try{
+            BufferedInputStream myStream = new BufferedInputStream(getClass().getResourceAsStream("res/sounds/pistola/pistola_tiro.wav"));
             Clip clip=AudioSystem.getClip();
-            AudioInputStream inputStream=AudioSystem.getAudioInputStream(getClass().getResourceAsStream("./res/sounds/pistola/pistola_tiro.wav"));
+            AudioInputStream inputStream=AudioSystem.getAudioInputStream(myStream);
             clip.open(inputStream);
             FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             gainControl.setValue(20f * (float) Math.log10(volume));
@@ -44,13 +45,25 @@ public class Pistola{
     public void atira(int X, int Y){
         atiraSound(1f);
         System.out.println("mX: "+mouseH.posX+" mY: "+mouseH.posY);
-        control.addbala(new Bala(bulletImage,X, Y, mouseH.posX, mouseH.posY));
+        control.addbala(new Bala(bulletImage,X, Y, mouseMH.posX, mouseMH.posY));
+    }
+
+    public void buffFireRate(){
+        mouseH.machineGun = true;
+    }
+
+    public void buffDmg(){
+        //dano++;
     }
 
     public void update(int X, int Y){
-        if(mouseH.leftclicked && personagem.getAmmo() > 0){
+        if(mouseH.mouseHold){
+            tick--;
+        }
+        if(((mouseH.leftclicked && !mouseH.mouseHold) || (mouseH.mouseHold && tick<=0)) && personagem.getAmmo() > 0){
+            tick=20;
             atira(X, Y);
-            mouseH.leftclicked = false;
+            mouseH.leftclicked=false;
         }
     }
 

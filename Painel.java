@@ -31,6 +31,8 @@ public class Painel extends JPanel{
     private int tickDie=150;
     float alpha=0.f;
     final int FPS = 60;
+    private boolean isdead = false;
+    private float deadalpha = 0f;
     
     public Painel(Jogo jogo, LoadAssets assets){
         this.jogo = jogo;
@@ -44,7 +46,7 @@ public class Painel extends JPanel{
         playerIcon = assets.getPlayericon();
         personagem = new Personagem(this,keyH,mouseMH,mouseH,personagemImages);
         control = new Controle(personagem, assets,this);
-        pistola = new Pistola(assets.getBulletImage(),mouseH,control,personagem);
+        pistola = new Pistola(assets.getBulletImage(),mouseH,mouseMH,control,personagem);
         pistola.atiraSound(0f);
 
         ground = assets.getBackground();
@@ -74,9 +76,18 @@ public class Painel extends JPanel{
         tickIntro--;
     }
 
+    void deadPlayer(Graphics2D g){
+        //System.out.println(deadalpha);
+        Color c=new Color(1f,0,0,deadalpha);
+        g.setColor(c);
+        if(deadalpha>0.5f) jogo.interruptThread();
+        else deadalpha=deadalpha+0.005f;
+        g.fillRect(0,120,1200,600);
+    }
+
     void setCursorimg(){
         try {
-            BufferedImage cursorimg = ImageIO.read(getClass().getResourceAsStream("./res/sprites/cursor/mira.png"));
+            BufferedImage cursorimg = ImageIO.read(getClass().getResourceAsStream("res/sprites/cursor/mira.png"));
             Cursor cursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorimg, new Point(0,0), "Sight");
             setCursor(cursor);
         } catch (IOException e) {
@@ -84,11 +95,18 @@ public class Painel extends JPanel{
         }
         
     }
-    
+
+    void die(){
+        isdead = true;
+    }
+
     public void update(){
-        personagem.update();
+        if(!isdead){
+            personagem.update();
+            pistola.update(personagem.getX(),personagem.getY());
+        }
+        if(personagem.getvida() <= 0 && !isdead) die();
         control.rodada();
-        pistola.update(personagem.getX(),personagem.getY());
     }
     
     public void paintComponent(Graphics g){
@@ -122,6 +140,7 @@ public class Painel extends JPanel{
         g2.setTransform(oldState);
         if(tickIntro>150)showIntro(g2);
         else hideIntro(g2);
+        if(isdead) deadPlayer(g2);
         g2.dispose();
     }
 

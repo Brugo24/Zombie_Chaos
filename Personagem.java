@@ -27,6 +27,7 @@ public class Personagem {
     private int tickinterval = 2;
     private int meleeRangeX;
     private int meleeRangeY;
+    private int meleeDMG;
     private int dinheiros;
 
     Painel gp;
@@ -41,7 +42,6 @@ public class Personagem {
         this.mouseMH = mouseMH;
         this.mouseH = mouseH;
         this.sprites = sprites;
-
         setDefaultValues();
     }
 
@@ -56,8 +56,9 @@ public class Personagem {
         personagemState = 0;
 
         ammo = 1000;
-        vida = 100;
+        vida = 10;
         dinheiros = 100;
+        meleeDMG = 1;
     }
 
     public int getX(){return posX;}
@@ -88,9 +89,19 @@ public class Personagem {
 
     public void ganhadinheiros(int ganhas){dinheiros+=ganhas;}
 
+    public int getMeleeDMG(){return meleeDMG;}
+
     public void heal(int vida){
         this.vida += vida;
         if(this.vida>100) this.vida = 100;
+    }
+
+    public void buffSpeed(){
+        velocidade++;
+    }
+
+    public void buffMeleeDmg(){
+        meleeDMG++;
     }
 
     void updateangulo(){
@@ -183,7 +194,7 @@ public class Personagem {
             g.drawImage(sprites[personagemState][spriteCounter], posX, posY, 110, 89, null);
         }
         g.setTransform(at);
-        g.setColor(Color.red);
-        g.fillOval(meleeRangeX, meleeRangeY, 5, 5);
+        //g.setColor(Color.red);
+        //g.fillOval(meleeRangeX, meleeRangeY, 5, 5);
     }
 }
