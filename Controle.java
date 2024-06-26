@@ -9,20 +9,27 @@ public class Controle {
     LinkedList<Bala> bl = new LinkedList<Bala>();
     LinkedList<Zombie> zl = new LinkedList<Zombie>();
     LinkedList<Ammo> al = new LinkedList<Ammo>();
+    LinkedList<Medkit> ml = new LinkedList<Medkit>();
 
     Personagem personagem;
     LoadAssets assets;
     Zombie zombie;
     Bala bala;
-    private int zombiemaxnumber = 1;
+    private int zombiemaxnumber = 10;
     private int zombienumber = 0;
     private int timer = 0;
     private int dmgcooldown = 100;
     private boolean canmeleedmg = true;
+    private int horda=0;
+    private int hordaMaxNumber=5;
+    int matar=0;
+    int cont=0;
+    private Painel painel;
 
-    Controle(Personagem personagem,LoadAssets assets){
+    Controle(Personagem personagem,LoadAssets assets,Painel painel){
         this.personagem = personagem;
         this.assets = assets;
+        this.painel = painel;
     }
 
     private void killZombie(Zombie zombie){
@@ -31,9 +38,17 @@ public class Controle {
         zl.remove(zombie);
         zombienumber--;
         if(drop == 0){
-            al.add(new Ammo(assets.getAmmoImages(),zombie.getX(),zombie.getY()));
+            if(personagem.getvida() < 100){
+                drop = random.nextInt(5);
+            }
+            if(drop <= 3) {
+                al.add(new Ammo(assets.getAmmoImages(), zombie.getX(), zombie.getY()));
+            }else{
+                ml.add(new Medkit(assets.getMedKitImage(), zombie.getX(), zombie.getY()));
+            }
         }
         personagem.ganhadinheiros(10);
+        cont++;
     }
 
     private void meleeColision(){
@@ -60,7 +75,17 @@ public class Controle {
             double dist = Math.sqrt(difX * difX + difY * difY);
             if(dist <= 40){
                 al.remove(ammo);
-                personagem.gainammo();
+                personagem.gainammo(3);
+            }
+        }
+        for (int i = 0; i < ml.size(); i++){
+            Medkit medkit = ml.get(i);
+            int difX = personagem.getcolisionX() - medkit.getX();
+            int difY = personagem.getcolisionY() - medkit.getY();
+            double dist = Math.sqrt(difX * difX + difY * difY);
+            if(dist <= 40){
+                ml.remove(medkit);
+                personagem.heal(10);
             }
         }
     }
@@ -75,7 +100,9 @@ public class Controle {
                 zombie.attack();
             }
             if((distance <= 2) && zombie.isattacking && dmgcooldown <= 0){
-                personagem.recebedano(5);
+                if(personagem.getvida() > 0) {
+                    personagem.recebedano(5);
+                }
                 dmgcooldown = 100;
             }
         }
@@ -98,11 +125,35 @@ public class Controle {
         }
     }
 
+    public int getHorda(){return horda;}
+
+    public void rodada() {
+        matar = horda * hordaMaxNumber;
+        if ((matar - cont) <= 0) {
+            System.out.println("horda " + horda + " concluida");
+            zl.clear();
+            zombienumber = 0;
+            personagem.gainammo(3 * al.size());
+            al.clear();
+            horda++;
+            cont = 0;
+            System.out.println("Iniciando horda " + horda);
+            setMaxNumber();
+            //\iniciar transicao
+
+            painel.setTickIntro();
+        }
+    }
+
+    void setMaxNumber(){
+        zombiemaxnumber = matar + 5;
+    }
+
     public void tick(Graphics2D g, AffineTransform oldState){
         Random random = new Random();
         dmgcooldown--;
         if(timer == 0 && zombienumber < zombiemaxnumber){
-            timer = random.nextInt(100)+100;
+            timer = random.nextInt(100/horda)+100/horda;
             spawnzombie();
             zombienumber++;
         }
@@ -137,6 +188,11 @@ public class Controle {
             Ammo ammo = al.get(i);
             ammo.draw(g);
         }
+
+        for(int i=0; i<ml.size(); i++){
+            Medkit medkit = ml.get(i);
+            medkit.draw(g);
+        }
     }
 
     public void addbala(Bala bala){
@@ -145,7 +201,7 @@ public class Controle {
     }
 
     public void addzombie(int x, int y){
-        zl.add(new Zombie(assets.getZombieImages(), personagem, x, y,2));
+        zl.add(new Zombie(assets.getZombieImages(), personagem, x, y,1));
     }
 
     void spawnzombie(){

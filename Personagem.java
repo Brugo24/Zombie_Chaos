@@ -88,6 +88,11 @@ public class Personagem {
 
     public void ganhadinheiros(int ganhas){dinheiros+=ganhas;}
 
+    public void heal(int vida){
+        this.vida += vida;
+        if(this.vida>100) this.vida = 100;
+    }
+
     void updateangulo(){
         //angulo,posX+(int)(Constants.SHOOTER_WIDTH/2.5)/2,posY+(int)(Constants.SHOOTER_HEIGHT/2.5)/2
         distanceX = mouseMH.posX - 75 - posX;
@@ -101,7 +106,7 @@ public class Personagem {
 
     public void shot(){ammo--;}
 
-    public void gainammo(){ammo += 3;}
+    public void gainammo(int ammo){this.ammo += ammo;}
 
     void melee(){
         ismelee = true;

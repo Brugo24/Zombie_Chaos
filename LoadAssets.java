@@ -20,6 +20,7 @@ public class LoadAssets {
     private BufferedImage ammoImage;
     private BufferedImage ammoCountIcon;
     private BufferedImage moneyIcon;
+    private BufferedImage medKitImage;
 
     LoadAssets(){
       loadCharacterImages();
@@ -27,12 +28,23 @@ public class LoadAssets {
       loadBackgroundImages();
       loadBulletImages();
       loadAmmoImage();
+      loadMedKitImage();
       loadIcons();
     }
 
     void loadIcons() {
         loadAmmoCountIcon();
         loadMoneyIcon();
+    }
+
+    void loadMedKitImage(){
+        InputStream is;
+        try{
+            is = getClass().getResourceAsStream("./res/sprites/entity/medkit.png");
+            medKitImage = ImageIO.read(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     void loadMoneyIcon(){
@@ -102,6 +114,10 @@ public class LoadAssets {
         }catch(IOException ex){
             ex.printStackTrace();
         }
+    }
+
+    BufferedImage getMedKitImage(){
+        return medKitImage;
     }
 
     BufferedImage getMoneyIcon(){

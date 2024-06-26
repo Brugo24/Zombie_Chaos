@@ -17,8 +17,6 @@ public class KeyHandler implements KeyListener{
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
 
-        anyKPressed = true;
-
         //System.out.println("Pressionada");
         
         if(key == KeyEvent.VK_W){
@@ -33,6 +31,8 @@ public class KeyHandler implements KeyListener{
         if(key == KeyEvent.VK_A){
             leftPressed = true;
         }
+
+        if(leftPressed || rightPressed || downPressed || upPressed){anyKPressed = true; }
     }
 
     public void keyReleased(KeyEvent e) {
