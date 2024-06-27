@@ -55,9 +55,9 @@ public class Personagem {
         ismelee = false;
         personagemState = 0;
 
-        ammo = 1000;
-        vida = 10;
-        dinheiros = 100;
+        ammo = 1500;
+        vida = 100;
+        dinheiros = 10000000;
         meleeDMG = 1;
     }
 
@@ -91,6 +91,8 @@ public class Personagem {
 
     public int getMeleeDMG(){return meleeDMG;}
 
+    public int getMoney(){return dinheiros;}
+
     public void heal(int vida){
         this.vida += vida;
         if(this.vida>100) this.vida = 100;
@@ -98,6 +100,7 @@ public class Personagem {
 
     public void buffSpeed(){
         velocidade++;
+        System.out.println("asfwfwawfafaw");
     }
 
     public void buffMeleeDmg(){

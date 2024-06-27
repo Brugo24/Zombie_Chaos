@@ -21,6 +21,10 @@ public class LoadAssets {
     private BufferedImage ammoCountIcon;
     private BufferedImage moneyIcon;
     private BufferedImage medKitImage;
+    private BufferedImage iconsLoja;
+    private BufferedImage[] buttonLoja = new BufferedImage[2];
+    private BufferedImage[] progressBarLoja = new BufferedImage[5];
+    private BufferedImage[] buttonLojaVolta = new BufferedImage[2];
 
     LoadAssets(){
       loadCharacterImages();
@@ -30,6 +34,29 @@ public class LoadAssets {
       loadAmmoImage();
       loadMedKitImage();
       loadIcons();
+      loadLoja();
+    }
+
+    void loadLoja(){
+        InputStream is;
+        try {
+            is = getClass().getResourceAsStream("res/loja/loja.png");
+            iconsLoja = ImageIO.read(is);
+            is = getClass().getResourceAsStream("res/loja/comprar.png");
+            buttonLoja[0] = ImageIO.read(is);
+            is = getClass().getResourceAsStream("res/loja/comprarhover.png");
+            buttonLoja[1] = ImageIO.read(is);
+            for(int i=0; i<=4; i++){
+                is = getClass().getResourceAsStream("res/loja/"+i+".png");
+                progressBarLoja[i] = ImageIO.read(is);
+            }
+            is = getClass().getResourceAsStream("res/loja/voltar.png");
+            buttonLojaVolta[0] = ImageIO.read(is);
+            is = getClass().getResourceAsStream("res/loja/voltarhover.png");
+            buttonLojaVolta[1] = ImageIO.read(is);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     void loadIcons() {
@@ -114,6 +141,22 @@ public class LoadAssets {
         }catch(IOException ex){
             ex.printStackTrace();
         }
+    }
+
+    BufferedImage[] getButtonLojaVolta(){
+        return buttonLojaVolta;
+    }
+
+    BufferedImage getIconsLoja(){
+        return iconsLoja;
+    }
+
+    BufferedImage[] getButtonLoja(){
+        return buttonLoja;
+    }
+
+    BufferedImage[] getProgressBarLoja(){
+        return progressBarLoja;
     }
 
     BufferedImage getMedKitImage(){

@@ -21,18 +21,19 @@ public class Controle {
     private int dmgcooldown = 50;
     private boolean canmeleedmg = true;
     private int horda=0;
-    private int hordaMaxNumber=40;
+    private int hordaMaxNumber=4;
     int matar=0;
     int cont=0;
     private Painel painel;
     private int zombieSpeed = 4;
     private int zombieHP = 1;
-    private int zombieDMG = 1;
+    private int zombieDMG = 5;
     private int tickDiv = 1;
     private int ammoDropValue = 5;
     private int medKitDropValue = 5;
     private int ammoValue = 3;
     private int medKitValue = 10;
+    public boolean canShoot;
 
     Controle(Personagem personagem,LoadAssets assets,Painel painel){
         this.personagem = personagem;
@@ -121,7 +122,7 @@ public class Controle {
             }
             if((distance <= 2) && zombie.isattacking && dmgcooldown <= 0){
                 if(personagem.getvida() > 0) {
-                    personagem.recebedano(5);
+                    personagem.recebedano(zombieDMG);
                 }
                 dmgcooldown = 100;
             }
@@ -147,7 +148,7 @@ public class Controle {
     void zombieBuff(){
         zombieSpeed++;
         zombieHP++;
-        zombieDMG++;
+        zombieDMG+=5;
     }
 
     public int getHorda(){return horda;}
@@ -172,6 +173,7 @@ public class Controle {
             //iniciar transicao
 
             painel.setTickIntro();
+            canShoot = false;
         }
     }
 
@@ -249,4 +251,6 @@ public class Controle {
         }
         addzombie(x,y);
     }
+
+
 }

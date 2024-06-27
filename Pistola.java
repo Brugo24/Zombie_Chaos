@@ -12,7 +12,8 @@ public class Pistola{
     MouseHandler mouseH;
     MouseMotionHandler mouseMH;
     Personagem personagem;
-    private int tick = 20;
+    private int tick;
+    private int tickSet = 40;
     
     public Pistola(BufferedImage bulletImage, MouseHandler mouseH,MouseMotionHandler mouseMH, Controle control,Personagem personagem){
         this.mouseH = mouseH;
@@ -25,6 +26,7 @@ public class Pistola{
 
     void setDefaultValues(){
         dmg = 1;
+        tick = tickSet;
     }
 
     public void atiraSound(float volume){
@@ -35,7 +37,6 @@ public class Pistola{
             clip.open(inputStream);
             FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             gainControl.setValue(20f * (float) Math.log10(volume));
-            System.out.println("volume:"+volume+"dB");
             clip.start();
         }catch(Exception e){
             System.out.println(e);
@@ -44,12 +45,11 @@ public class Pistola{
 
     public void atira(int X, int Y){
         atiraSound(1f);
-        System.out.println("mX: "+mouseH.posX+" mY: "+mouseH.posY);
         control.addbala(new Bala(bulletImage,X, Y, mouseMH.posX, mouseMH.posY));
     }
 
     public void buffFireRate(){
-        mouseH.machineGun = true;
+        tickSet /= 2;
     }
 
     public void buffDmg(){
@@ -59,9 +59,15 @@ public class Pistola{
     public void update(int X, int Y){
         if(mouseH.mouseHold){
             tick--;
+            if(tick <= 0){
+                mouseH.shootOnRelese = false;
+            }
         }
-        if(((mouseH.leftclicked && !mouseH.mouseHold) || (mouseH.mouseHold && tick<=0)) && personagem.getAmmo() > 0){
-            tick=20;
+        if(personagem.ismelee || !control.canShoot){
+            mouseH.leftclicked = false;
+        }
+        if(((mouseH.leftclicked && !mouseH.mouseHold) || (mouseH.mouseHold && tick<=0)) && personagem.getAmmo() > 0 && control.canShoot){
+            tick=tickSet;
             atira(X, Y);
             mouseH.leftclicked=false;
         }

@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.sound.sampled.*;
 
@@ -74,17 +75,17 @@ public class MenuP extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 if((e.getX()>=300 && e.getX()<=480) && (e.getY()>=150 && e.getY()<=235)){
-
                     startGame();
                     hideJFrame();
                   
                     
                 }else if((e.getX()>=300 && e.getX()<=480) && (e.getY()>=235 && e.getY()<=290)){
-                    
-                    
+                    startDevsMenu();
+                    hideJFrame();
                     
                   }
             }
+
         });
         setContentPane(panel);
 
@@ -94,6 +95,10 @@ public class MenuP extends JFrame{
 
     void startGame(){
         Jogo jogo=new Jogo(this);
+    }
+
+    void startDevsMenu(){
+        Devs devs = new Devs(this);
     }
 
     public static void main(String[] args) {

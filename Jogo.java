@@ -2,6 +2,7 @@ package joguin;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Jogo extends JFrame implements Runnable{
     JFrame janela;
@@ -10,7 +11,8 @@ public class Jogo extends JFrame implements Runnable{
     LoadAssets assets;
     MenuP menu;
     int FPS = 60;
-    private boolean threadRunning = false;
+    AtomicBoolean isRunning = new AtomicBoolean(false);
+    AtomicBoolean isStoped = new AtomicBoolean(false);
     Jogo(MenuP menu){
         this.menu=menu;
 
@@ -31,23 +33,41 @@ public class Jogo extends JFrame implements Runnable{
         startThread();
     }
 
+    void interupt(){
+        isRunning.set(false);
+        gameThread.interrupt();
+    }
+
+    boolean isrunning(){
+        return isRunning.get();
+    }
+
+    boolean isStoped(){
+        return isStoped.get();
+    }
+
     public void startThread(){
         gameThread = new Thread(this);
         gameThread.start();
-        threadRunning = true;
     }
 
     public void interruptThread(){
-        //gameThread.interrupt();
-        threadRunning = false;
+        janela.dispose();
+        menu.setVisible(true);
+    }
+
+    public void wakeUp(){
+        gameThread.notify();
     }
 
     public void run(){
-        while(threadRunning) {
+        isRunning.set(true);
+        isStoped.set(false);
+        while(isRunning.get()) {
             double interval = (double) 1000000000 / FPS;
             double proxatt = System.nanoTime() + interval;
 
-            while (gameThread.isAlive()) {
+            while (isRunning.get()) {
                 painel.update();
 
                 painel.repaint();
@@ -63,15 +83,12 @@ public class Jogo extends JFrame implements Runnable{
                     Thread.sleep((long) temporestante);
 
                     proxatt += interval;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                }
+                catch (InterruptedException e) {
                 }
 
             }
         }
-        System.out.println("morreu");
-        menu.setVisible(true);
-        janela.dispose();
+        isStoped.set(true);
     }
-
 }

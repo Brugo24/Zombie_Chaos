@@ -8,11 +8,11 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 public class Painel extends JPanel{
 
     Jogo jogo;
-    BufferedImage imagem;
     KeyHandler keyH = new KeyHandler();
     MouseMotionHandler mouseMH = new MouseMotionHandler();
     MouseHandler mouseH = new MouseHandler();
@@ -26,6 +26,12 @@ public class Painel extends JPanel{
     InputStream is;
     Thread gameThread;
     AffineTransform oldState;
+    Cursor cursor;
+    BufferedImage[] progressBar = new BufferedImage[8];
+    BufferedImage[] buffIcons;
+    BufferedImage buffsLoja;
+    BufferedImage[] comprarButton;
+    BufferedImage[] buttonVoltaLoja;
     private boolean mostrarIntro;
     private  int tickIntro=300;
     private int tickDie=150;
@@ -33,6 +39,9 @@ public class Painel extends JPanel{
     final int FPS = 60;
     private boolean isdead = false;
     private float deadalpha = 0f;
+    private boolean lojaActive = false;
+    private int[] progress = new int[8];
+    private boolean disableLoja = false;
     
     public Painel(Jogo jogo, LoadAssets assets){
         this.jogo = jogo;
@@ -49,6 +58,13 @@ public class Painel extends JPanel{
         pistola = new Pistola(assets.getBulletImage(),mouseH,mouseMH,control,personagem);
         pistola.atiraSound(0f);
 
+        buffsLoja = assets.getIconsLoja();
+        comprarButton = assets.getButtonLoja();
+        progressBar = assets.getProgressBarLoja();
+        buttonVoltaLoja = assets.getButtonLojaVolta();
+
+        Arrays.fill(progress,0);
+
         ground = assets.getBackground();
 
         this.addKeyListener(keyH);
@@ -64,6 +80,9 @@ public class Painel extends JPanel{
         alpha=alpha+0.005f;
         if(alpha>0.75f)alpha=0.75f;
         g.fillRect(0,120,1200,600);
+        Color c2=new Color(1f,1f,1f,alpha);
+        g.setColor(c2);
+        g.drawString("Horda "+(control.getHorda()+1),550,400);
         tickIntro--;
     }
     void hideIntro(Graphics2D g){
@@ -73,6 +92,10 @@ public class Painel extends JPanel{
         if(alpha<0f)alpha=0f;
 
         g.fillRect(0,120,1200,600);
+        Color c2=new Color(1f,1f,1f,alpha);
+        g.setColor(c2);
+        g.drawString("Horda "+(control.getHorda()+1),550,400);
+
         tickIntro--;
     }
 
@@ -80,15 +103,18 @@ public class Painel extends JPanel{
         //System.out.println(deadalpha);
         Color c=new Color(1f,0,0,deadalpha);
         g.setColor(c);
-        if(deadalpha>0.5f) jogo.interruptThread();
+        if(deadalpha>0.5f){
+            jogo.interupt();
+        }
         else deadalpha=deadalpha+0.005f;
         g.fillRect(0,120,1200,600);
+
     }
 
     void setCursorimg(){
         try {
             BufferedImage cursorimg = ImageIO.read(getClass().getResourceAsStream("res/sprites/cursor/mira.png"));
-            Cursor cursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorimg, new Point(0,0), "Sight");
+            cursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorimg, new Point(0,0), "Sight");
             setCursor(cursor);
         } catch (IOException e) {
             e.printStackTrace();
@@ -100,13 +126,73 @@ public class Painel extends JPanel{
         isdead = true;
     }
 
+    void loja(Graphics2D g){
+        g.drawImage(buffsLoja, 15, 120, null);
+        for(int y=205+120, i=0; y<=505+120; y+=300){
+            for(int x=15; x<=1186; x+=307,i++){
+                g.drawImage(progressBar[progress[i]], x, y-36, null);
+                if(mouseMH.hover[i] && progress[i] < 4){
+                    g.drawImage(comprarButton[1], x, y, null);
+                }else{
+                    g.drawImage(comprarButton[0], x, y, null);
+                }
+            }
+        }
+        if(mouseMH.hover[8]){
+            g.drawImage(buttonVoltaLoja[1],860,24,null);
+        }else{
+            g.drawImage(buttonVoltaLoja[0],860,24,null);
+        }
+        g.dispose();
+    }
+
     public void update(){
+        if(tickIntro <0) control.canShoot = true;
         if(!isdead){
             personagem.update();
             pistola.update(personagem.getX(),personagem.getY());
         }
         if(personagem.getvida() <= 0 && !isdead) die();
         control.rodada();
+        if(lojaActive){
+            if(mouseH.clicked[0] && progress[0] < 4){
+                progress[0]++;
+                pistola.buffDmg();
+                mouseH.clicked[0] = false;
+            }else if(mouseH.clicked[1] && progress[1] < 4){
+                progress[1]++;
+                pistola.buffFireRate();
+                mouseH.clicked[1] = false;
+            }else if(mouseH.clicked[2] && progress[2] < 4){
+                progress[2]++;
+                control.buffAmmoDropRate();
+                mouseH.clicked[2] = false;
+            }else if(mouseH.clicked[3] && progress[3] < 4){
+                progress[3]++;
+                control.buffAmmoReceive();
+                mouseH.clicked[3] = false;
+            }else if(mouseH.clicked[4] && progress[4] < 4){
+                progress[4]++;
+                personagem.buffMeleeDmg();
+                mouseH.clicked[4] = false;
+            }else if(mouseH.clicked[5] && progress[5] < 4){
+                progress[5]++;
+                personagem.buffSpeed();
+                mouseH.clicked[5] = false;
+            }else if(mouseH.clicked[6] && progress[6] < 4){
+                progress[6]++;
+                control.buffMedKitDropRate();
+                mouseH.clicked[6] = false;
+            }else if(mouseH.clicked[7] && progress[7] < 4){
+                progress[7]++;
+                control.buffMedkitReceive();
+                mouseH.clicked[7] = false;
+            }else if(mouseH.clicked[8]){
+                mouseH.clicked[8] =false;
+                disableLoja = true;
+                setCursor(cursor);
+            }
+        }
     }
     
     public void paintComponent(Graphics g){
@@ -118,11 +204,13 @@ public class Painel extends JPanel{
         g2.drawImage(ground,611,119,null);
         oldState = g2.getTransform();
 
-        personagem.draw(g2);
+        if(!lojaActive){
+            personagem.draw(g2);
+        }
 
         g2.setTransform(oldState);
 
-        if(tickIntro <= 0) control.tick(g2,oldState);
+        if(tickIntro <= 0 && !lojaActive) control.tick(g2,oldState);
         g2.setColor(Color.gray);
         g2.fillRect(0,0,1200,120);
         personagem.drawlifebar(g2);
@@ -139,7 +227,24 @@ public class Painel extends JPanel{
         //g2.setColor();
         g2.setTransform(oldState);
         if(tickIntro>150)showIntro(g2);
-        else hideIntro(g2);
+        else if(!lojaActive && tickIntro >0 && !disableLoja){
+            lojaActive = true;
+            mouseH.loja = true;
+            mouseMH.loja = true;
+            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+        if(disableLoja){
+            hideIntro(g2);
+            lojaActive = false;
+            if(tickIntro==0) {
+                mouseH.loja = false;
+                disableLoja = false;
+                mouseMH.loja = false;
+            }
+        }
+        if(lojaActive){
+            loja(g2);
+        }
         if(isdead) deadPlayer(g2);
         g2.dispose();
     }
