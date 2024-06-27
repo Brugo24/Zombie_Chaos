@@ -25,6 +25,7 @@ public class LoadAssets {
     private BufferedImage[] buttonLoja = new BufferedImage[2];
     private BufferedImage[] progressBarLoja = new BufferedImage[5];
     private BufferedImage[] buttonLojaVolta = new BufferedImage[2];
+    private BufferedImage[] iconsBuff = new BufferedImage[8];
 
     LoadAssets(){
       loadCharacterImages();
@@ -54,6 +55,10 @@ public class LoadAssets {
             buttonLojaVolta[0] = ImageIO.read(is);
             is = getClass().getResourceAsStream("res/loja/voltarhover.png");
             buttonLojaVolta[1] = ImageIO.read(is);
+            for(int i=0; i<8; i++){
+                is = getClass().getResourceAsStream("res/sprites/personagemicon/"+i+".png");
+                iconsBuff[i] = ImageIO.read(is);
+            }
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -141,6 +146,10 @@ public class LoadAssets {
         }catch(IOException ex){
             ex.printStackTrace();
         }
+    }
+
+    BufferedImage[] getIconsBuff(){
+        return iconsBuff;
     }
 
     BufferedImage[] getButtonLojaVolta(){

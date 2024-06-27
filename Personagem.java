@@ -29,6 +29,7 @@ public class Personagem {
     private int meleeRangeY;
     private int meleeDMG;
     private int dinheiros;
+    private boolean endGame = false;
 
     Painel gp;
     KeyHandler keyH;
@@ -55,11 +56,13 @@ public class Personagem {
         ismelee = false;
         personagemState = 0;
 
-        ammo = 1500;
+        ammo = 15;
         vida = 100;
-        dinheiros = 10000000;
+        dinheiros = 0;
         meleeDMG = 1;
     }
+
+    public void setEndGame(){endGame = true;}
 
     public int getX(){return posX;}
     
@@ -93,6 +96,8 @@ public class Personagem {
 
     public int getMoney(){return dinheiros;}
 
+    public void buy(int waste){dinheiros -= waste;}
+
     public void heal(int vida){
         this.vida += vida;
         if(this.vida>100) this.vida = 100;
@@ -100,7 +105,6 @@ public class Personagem {
 
     public void buffSpeed(){
         velocidade++;
-        System.out.println("asfwfwawfafaw");
     }
 
     public void buffMeleeDmg(){
@@ -118,7 +122,7 @@ public class Personagem {
         meleeRangeY = ((int)(15 * Math.sin(angulo) + 5 * Math.cos(angulo)) + posY + 47);
     }
 
-    public void shot(){ammo--;}
+    public void shot(){if(!endGame) ammo--;}
 
     public void gainammo(int ammo){this.ammo += ammo;}
 

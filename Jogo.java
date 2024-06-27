@@ -90,5 +90,8 @@ public class Jogo extends JFrame implements Runnable{
             }
         }
         isStoped.set(true);
+        janela.dispose();
+        menu.setVisible(true);
+        this.dispose();
     }
 }

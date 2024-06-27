@@ -45,7 +45,7 @@ public class Pistola{
 
     public void atira(int X, int Y){
         atiraSound(1f);
-        control.addbala(new Bala(bulletImage,X, Y, mouseMH.posX, mouseMH.posY));
+        control.addbala(new Bala(bulletImage,X, Y, mouseMH.posX, mouseMH.posY,dmg));
     }
 
     public void buffFireRate(){
@@ -53,7 +53,11 @@ public class Pistola{
     }
 
     public void buffDmg(){
-        //dano++;
+        dmg++;
+    }
+
+    public int getDmg(){
+        return dmg;
     }
 
     public void update(int X, int Y){

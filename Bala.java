@@ -11,15 +11,15 @@ public class Bala extends Projetil {
     private int dmg;
     BufferedImage bulletImage;
     
-    public Bala(BufferedImage bulletImage, int startX, int startY, int endX, int endY){
+    public Bala(BufferedImage bulletImage, int startX, int startY, int endX, int endY,int dmg){
         this.x = startX + 75;
         this.y = startY + 47;
         this.xf = endX;
         this.yf = endY;
         this.bulletImage = bulletImage;
+        this.dmg = dmg;
         //System.out.println("mX: "+xf+" mY: "+yf);
         velocidade = 20;
-        dmg = 1;
         direction=Math.atan2(yf-y-2, xf-x-2);
     }
 

@@ -21,7 +21,7 @@ public class Controle {
     private int dmgcooldown = 50;
     private boolean canmeleedmg = true;
     private int horda=0;
-    private int hordaMaxNumber=4;
+    private int hordaMaxNumber=30;
     int matar=0;
     int cont=0;
     private Painel painel;
@@ -29,8 +29,8 @@ public class Controle {
     private int zombieHP = 1;
     private int zombieDMG = 5;
     private int tickDiv = 1;
-    private int ammoDropValue = 5;
-    private int medKitDropValue = 5;
+    private int ammoDropValue = 0;
+    private int medKitDropValue = 0;
     private int ammoValue = 3;
     private int medKitValue = 10;
     public boolean canShoot;
@@ -42,11 +42,11 @@ public class Controle {
     }
 
     void buffAmmoDropRate(){
-        ammoDropValue --;
+        ammoDropValue = ammoDropValue + 20;
     }
 
     void buffMedKitDropRate(){
-        medKitDropValue --;
+        medKitDropValue = medKitDropValue + 20;
     }
 
     void buffAmmoReceive(){
@@ -59,16 +59,17 @@ public class Controle {
 
     private void killZombie(Zombie zombie){
         Random random = new Random();
-        int ammodrop = random.nextInt(ammoDropValue);
-        int medkitdrop = random.nextInt(medKitDropValue);
-        if(ammodrop == 0){
+        int ammodrop = random.nextInt(100);
+        int medkitdrop = random.nextInt(100);
+        if(ammodrop <= 20 + ammoDropValue){
             al.add(new Ammo(assets.getAmmoImages(),zombie.getX(),zombie.getY()));
-        }else if(medkitdrop == 0 && personagem.getvida() < 100){
+        }
+        if(medkitdrop <= 20 + medKitDropValue && personagem.getvida() < 100){
             ml.add(new Medkit(assets.getMedKitImage(),zombie.getX(),zombie.getY()));
         }
         zl.remove(zombie);
         zombienumber--;
-        personagem.ganhadinheiros(10);
+        personagem.ganhadinheiros(10 + (int)horda*(horda/2));
         cont++;
     }
 
@@ -80,7 +81,7 @@ public class Controle {
             double dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
             if(dist <= 50){
                 zombie.dano(personagem.getMeleeDMG());
-                if(zombie.getVida() == 0) {
+                if(zombie.getVida() <= 0) {
                     killZombie(zombie);
                 }
                 canmeleedmg = false;
@@ -136,7 +137,7 @@ public class Controle {
                 bala=bl.get(j);
                 if(bala.getX()>= zombie.getX() && bala.getX()<=zombie.getX()+(int)(288/3) && bala.getY()>=zombie.getY() && bala.getY()<=zombie.getY()+(int)(311/3)){
                     zombie.dano(bala.getDmg());
-                    if(zombie.getVida() == 0){
+                    if(zombie.getVida() <= 0){
                         killZombie(zombie);
                     }
                     bl.remove(bala);
@@ -156,7 +157,7 @@ public class Controle {
     public void rodada() {
         matar = hordaMaxNumber;
         if ((matar - cont) <= 0) {
-            System.out.println("horda " + horda + " concluida");
+            //System.out.println("horda " + horda + " concluida");
             tickDiv++;
             zl.clear();
             zombienumber = 0;
@@ -164,12 +165,12 @@ public class Controle {
             al.clear();
             horda++;
             if((horda+1)%3 == 0){
-                hordaMaxNumber = 40;
+                hordaMaxNumber = 30;
                 zombieBuff();
                 tickDiv=1;
             }
             cont = 0;
-            System.out.println("Iniciando horda " + horda);
+            //System.out.println("Iniciando horda " + horda);
             //iniciar transicao
 
             painel.setTickIntro();
